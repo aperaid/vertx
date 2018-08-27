@@ -49,7 +49,6 @@ class SendMessage implements ShouldQueue
       }
 
       //echo "Attempting to connect to '.$this->Address.' on port '.$this->ServicePort.'...\n";
-			echo "$this->Socket, $this->Address, $this->ServicePort, $this->Message";
       $result = socket_connect($this->Socket, $this->Address, $this->ServicePort);
       if ($result === false) {
           //echo "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($this->Socket)) . "\n";

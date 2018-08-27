@@ -70,10 +70,10 @@ class StartBroadcastServer extends Command
 			//echo "socket: $socket created\n";
 			
 			// create & add listening socket to the list
-			$this->clients = array(
-					$socket
-			);
+			$this->clients = array($socket);
 			
+      echo("Controller broadcast is started\n");
+      echo("=========================\n");
 			// start endless loop, so that our script doesn't stop
 			while (true) {
 					// manage multipal connections

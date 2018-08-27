@@ -70,7 +70,6 @@ class StartControllerServer extends Command
           //New connection incoming
       		$socket_new = socket_accept($socket); //accept new socket
       		socket_getpeername($socket_new, $ip); //get ip address of connected socket
-					echo "$ip<--new ip\n";
           if ($ip != env('APP_IP')){
       		  echo "Client ".$ip." is connected\n";
       		  $clients[$ip] = $socket_new; //add socket to client array
@@ -87,22 +86,16 @@ class StartControllerServer extends Command
           // Reading incoming message first 10 chars
       		$buf = @socket_read($changed_socket, 10, PHP_NORMAL_READ); //to check $buf is filled
 					socket_getpeername($changed_socket, $ip);
-					echo "$ip<--changed ip\n";
 
       		if ($buf === false) { //if $buf empty
-						echo "\n false<--\n";
       			$clients = array_diff($clients, array($changed_socket)); // Remove client from $clients array
             if ($ip != env('APP_IP'))
       			   echo "$ip is disconnected\n";
       		} else {
-						echo "\n true<--\n";
       			if($ip == env('APP_IP')) { //server to controller
 							$buf .= @socket_read($changed_socket, 2, PHP_NORMAL_READ);
-					echo "\n$buf<--buf+2\n";
 							$length = substr ($buf, 5, 6);
-							echo "\n$length<--length\n";
 							$buf .= @socket_read($changed_socket, $length-12, PHP_NORMAL_READ);
-							echo "\n$buf<--+length\n";
       				/*********************************************
       				*   Message from server 0000;000037;%0060;0010;%192.168.100.1
               *   unmask[0] = 0000;XXXXXX;
@@ -113,7 +106,6 @@ class StartControllerServer extends Command
       				$message = $unmask[1];
               $controllerip = $unmask[2];
               echo "$message to $controllerip\n";
-							echo "server to controller\n";
       				
       				if(isset($clients[$controllerip])) {
            			$this->send_message($message, array($clients[$controllerip]));
@@ -127,7 +119,6 @@ class StartControllerServer extends Command
       				*    Message from controller
               *********************************************/
               echo "$ip : $buf\n";
-							echo "controller to server\n";
 							if(!in_array(substr($buf,0,4), ['1027', '1012', '1080'])) //ignore these event
 								event(new EventHappened($buf."%".$ip));
               /* Lupa buat apa
@@ -139,7 +130,6 @@ class StartControllerServer extends Command
               */
       			}
           }
-					echo "==================\n";
       	}
       }
       socket_close($socket);
